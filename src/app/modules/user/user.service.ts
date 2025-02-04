@@ -1,4 +1,6 @@
+import bcrypt from "bcrypt";
 import { StatusCodes } from "http-status-codes";
+import { JwtPayload } from "jsonwebtoken";
 import config from "../../config";
 import AppError from "../../errors/AppError";
 import { TLoginUser, TUser } from "./user.interface";
@@ -34,9 +36,32 @@ const loginUserInDB = async (payload: TLoginUser) => {
   return accessToken;
 };
 
+const changePasswordInDB = async (userData: JwtPayload, payload: { oldPassword: string; newPassword: string }) => {
+  const user = await User.isUserExistsByEmail(userData.email);
+  if (!user) {
+    throw new AppError(StatusCodes.NOT_FOUND, "This user is not found !");
+  }
+
+  //checking if the password is correct
+  if (!(await User.isPasswordMatched(payload.oldPassword, user?.password))) throw new AppError(StatusCodes.FORBIDDEN, "Password do not matched");
+
+  //hash new password
+  const newHashedPassword = await bcrypt.hash(payload.newPassword, Number(config.bcrypt_salt_rounds));
+
+  await User.findOneAndUpdate(
+    { email: userData.email, role: userData.role },
+    {
+      password: newHashedPassword,
+    },
+  );
+
+  return null;
+};
+
 export const UserServices = {
   registerUserInDB,
   loginUserInDB,
+  changePasswordInDB,
 };
 // 🚀 ~ loginUserInDB ~ user: {
 //   _id: new ObjectId('6798bcc1e6af2188154be2c8'),
