@@ -8,6 +8,7 @@ export type TOrder = {
   }[];
   totalPrice: number;
   status: "Pending" | "Paid" | "Shipped" | "Completed" | "Cancelled";
+  eta?: Date;
   transaction: {
     id: string;
     transactionStatus: string;
