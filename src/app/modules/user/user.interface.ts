@@ -8,8 +8,8 @@ export interface TUser {
   phone?: string;
   address?: string;
   role: "admin" | "user";
+  status: "active" | "blocked";
   //   passwordChangedAt?: Date;
-  //   status: "in-progress" | "blocked";
 }
 
 export type TLoginUser = {

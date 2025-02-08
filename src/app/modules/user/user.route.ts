@@ -18,4 +18,6 @@ router.post(
   UserControllers.changePassword,
 );
 
+router.post("/change-status/:id", auth(USER_ROLE.admin), validateRequest(userValidations.changeStatusValidationSchema), UserControllers.changeStatus);
+
 export const UserRoutes = router;

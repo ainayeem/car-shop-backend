@@ -35,6 +35,12 @@ const auth = (...requiredRoles: TUserRole[]) => {
       throw new AppError(StatusCodes.NOT_FOUND, "This user is not found!");
     }
 
+    // checking if the user is blocked
+    const userStatus = user?.status;
+    if (userStatus === "blocked") {
+      throw new AppError(StatusCodes.FORBIDDEN, "This user is blocked !!");
+    }
+
     // if (user.passwordChangedAt && User.isJWTIssuedBeforePasswordChanged(user.passwordChangedAt, iat as number)) {
     //   throw new AppError(StatusCodes.UNAUTHORIZED, "You are not authorized !");
     // }

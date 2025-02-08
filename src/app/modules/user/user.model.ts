@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { model, Schema } from "mongoose";
 import config from "../../config";
-import { USER_ROLE } from "./user.constant";
+import { USER_ROLE, UserStatus } from "./user.constant";
 import { TUser, UserModel } from "./user.interface";
 
 const userSchema = new Schema<TUser>(
@@ -25,6 +25,11 @@ const userSchema = new Schema<TUser>(
       type: String,
       enum: ["admin", "user"],
       default: USER_ROLE.user,
+    },
+    status: {
+      type: String,
+      enum: UserStatus,
+      default: "active",
     },
   },
   {

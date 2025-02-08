@@ -20,6 +20,12 @@ const loginUserInDB = async (payload: TLoginUser) => {
     throw new AppError(StatusCodes.NOT_FOUND, "User is not found!");
   }
 
+  // checking if the user is blocked
+  const userStatus = user?.status;
+  if (userStatus === "blocked") {
+    throw new AppError(StatusCodes.FORBIDDEN, "This user is blocked ! !");
+  }
+
   //checking if the password is correct
   if (!(await User.isPasswordMatched(payload?.password, user?.password))) {
     throw new AppError(StatusCodes.FORBIDDEN, "Password not matched");
@@ -42,6 +48,12 @@ const changePasswordInDB = async (userData: JwtPayload, payload: { oldPassword: 
     throw new AppError(StatusCodes.NOT_FOUND, "This user is not found !");
   }
 
+  // checking if the user is blocked
+  const userStatus = user?.status;
+  if (userStatus === "blocked") {
+    throw new AppError(StatusCodes.FORBIDDEN, "This user is blocked ! !");
+  }
+
   //checking if the password is correct
   if (!(await User.isPasswordMatched(payload.oldPassword, user?.password))) throw new AppError(StatusCodes.FORBIDDEN, "Password do not matched");
 
@@ -58,10 +70,18 @@ const changePasswordInDB = async (userData: JwtPayload, payload: { oldPassword: 
   return null;
 };
 
+const changeStatusInDB = async (id: string, payload: { status: string }) => {
+  const result = await User.findByIdAndUpdate(id, payload, {
+    new: true,
+  });
+  return result;
+};
+
 export const UserServices = {
   registerUserInDB,
   loginUserInDB,
   changePasswordInDB,
+  changeStatusInDB,
 };
 // 🚀 ~ loginUserInDB ~ user: {
 //   _id: new ObjectId('6798bcc1e6af2188154be2c8'),
