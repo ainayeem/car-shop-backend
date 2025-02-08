@@ -4,6 +4,18 @@ import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { UserServices } from "./user.service";
 
+const getAllUser = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserServices.getAllUserFromDB(req.query);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Users are retrieved successfully",
+    meta: result.meta,
+    data: result.result,
+  });
+});
+
 const registerUser = catchAsync(async (req: Request, res: Response) => {
   const result = await UserServices.registerUserInDB(req.body);
 
@@ -52,6 +64,7 @@ const changeStatus = catchAsync(async (req, res) => {
 });
 
 export const UserControllers = {
+  getAllUser,
   registerUser,
   loginUser,
   changePassword,

@@ -1,11 +1,25 @@
 import bcrypt from "bcrypt";
 import { StatusCodes } from "http-status-codes";
 import { JwtPayload } from "jsonwebtoken";
+import QueryBuilder from "../../builder/QueryBuilder";
 import config from "../../config";
 import AppError from "../../errors/AppError";
+import { UserSearchableFields } from "./user.constant";
 import { TLoginUser, TUser } from "./user.interface";
 import { User } from "./user.model";
 import { createToken } from "./user.utils";
+
+const getAllUserFromDB = async (query: Record<string, unknown>) => {
+  const userQuery = new QueryBuilder(User.find(), query).search(UserSearchableFields).filter().sort().paginate().fields();
+
+  const result = await userQuery.modelQuery;
+  const meta = await userQuery.countTotal();
+
+  return {
+    meta,
+    result,
+  };
+};
 
 const registerUserInDB = async (payload: TUser) => {
   const newUser = await User.create(payload);
@@ -22,7 +36,7 @@ const loginUserInDB = async (payload: TLoginUser) => {
 
   // checking if the user is blocked
   const userStatus = user?.status;
-  if (userStatus === "blocked") {
+  if (userStatus === "block") {
     throw new AppError(StatusCodes.FORBIDDEN, "This user is blocked ! !");
   }
 
@@ -50,7 +64,7 @@ const changePasswordInDB = async (userData: JwtPayload, payload: { oldPassword: 
 
   // checking if the user is blocked
   const userStatus = user?.status;
-  if (userStatus === "blocked") {
+  if (userStatus === "block") {
     throw new AppError(StatusCodes.FORBIDDEN, "This user is blocked ! !");
   }
 
@@ -78,6 +92,7 @@ const changeStatusInDB = async (id: string, payload: { status: string }) => {
 };
 
 export const UserServices = {
+  getAllUserFromDB,
   registerUserInDB,
   loginUserInDB,
   changePasswordInDB,

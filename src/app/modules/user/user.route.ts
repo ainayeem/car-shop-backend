@@ -7,6 +7,8 @@ import { userValidations } from "./user.validation";
 
 const router = express.Router();
 
+router.get("/", UserControllers.getAllUser);
+
 router.post("/register", validateRequest(userValidations.registerUserValidationSchema), UserControllers.registerUser);
 
 router.post("/login", validateRequest(userValidations.loginUserValidationSchema), UserControllers.loginUser);
@@ -18,6 +20,11 @@ router.post(
   UserControllers.changePassword,
 );
 
-router.post("/change-status/:id", auth(USER_ROLE.admin), validateRequest(userValidations.changeStatusValidationSchema), UserControllers.changeStatus);
+router.patch(
+  "/change-status/:id",
+  auth(USER_ROLE.admin),
+  validateRequest(userValidations.changeStatusValidationSchema),
+  UserControllers.changeStatus,
+);
 
 export const UserRoutes = router;

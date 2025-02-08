@@ -3,4 +3,6 @@ export const USER_ROLE = {
   user: "user",
 } as const;
 
-export const UserStatus = ["active", "blocked"];
+export const UserStatus = ["active", "block"];
+
+export const UserSearchableFields = ["email", "name"];

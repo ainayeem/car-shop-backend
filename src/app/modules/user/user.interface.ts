@@ -8,7 +8,7 @@ export interface TUser {
   phone?: string;
   address?: string;
   role: "admin" | "user";
-  status: "active" | "blocked";
+  status: "active" | "block";
   //   passwordChangedAt?: Date;
 }
 
