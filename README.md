@@ -76,7 +76,7 @@ This is a Car E-Commerce Platform, a web application designed to facilitate the 
 
 ## Installation & Setup
 
-### 💻 Backend Setup
+### Backend Setup
 
 ```sh
 # Install dependencies
